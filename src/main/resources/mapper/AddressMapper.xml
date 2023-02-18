@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.AddressMapper">
+    <select id="selectRooms" resultType="com.management.domain.Address">
+        select *
+        from sys_address where 1=1
+        <if test="address.addressBuilding != null">and ADDRESS_BUILDING  = #{address.addressBuilding}  </if>
+        <if test="address.addressFloor != null">and ADDRESS_FLOOR  = #{address.addressFloor}  </if>
+        <if test="address.addressRoom != null">and ADDRESS_ROOM = #{address.addressRoom} </if>
+    </select>
+</mapper>

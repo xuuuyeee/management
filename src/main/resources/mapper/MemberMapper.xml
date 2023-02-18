@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.MemberMapper">
+    <select id="selectMembers" resultType="com.management.domain.Member">
+        select MEMBER_ID, MEMBER_LEVEL, MEMBER_NAME, MEMBER_PIC, MEMBER_REPAIR_AREA
+        from sys_member where 1=1
+        <if test="Member.memberId != null and Member.memberId != ''">and MEMBER_ID  = #{Member.memberId} </if>
+        <if test="Member.memberLevel != null and Member.memberLevel != ''">and MEMBER_LEVEL  = #{Member.memberLevel} </if>
+        <if test="Member.memberName != null and Member.memberName != ''">and MEMBER_NAME like CONCAT('%',#{Member.memberName} ,'%')</if>
+        <if test="Member.memberRepairArea != null and Member.memberRepairArea != ''">and MEMBER_REPAIR_AREA like CONCAT('%',#{Member.memberRepairArea} ,'%')</if>
+        <if test="state != null and state != '' ">
+            <choose>
+                <when test="state == false">
+                   and MEMBER_STATUS = 0
+                </when>
+                <otherwise>
+                   and MEMBER_STATUS = 1
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+</mapper>

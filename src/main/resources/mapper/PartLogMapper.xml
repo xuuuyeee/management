@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.PartLogMapper">
+    <select id="selectPartLogs" resultType="PartLogDetail">
+        select spl.PART_LOG_ID, part.PART_NAME, spl.PART_QUANTITY, MEMBER_NAME, spl.PART_TASK_TYPE, PART_TASK_ID, DEVICE_NAME,PART_USE_TIME
+        from sys_part_log spl left join sys_member member on  spl.PART_MEMBER_ID = member.MEMBER_ID
+                              left join sys_device device on  spl.PART_DEVICE_ID = device.DEVICE_ID
+                              left join sys_part   part   on  spl.PART_ID        = part.PART_ID
+                              left join sys_maintain maintain on PART_TASK_TYPE = 1 and PART_TASK_ID = MAINTAIN_ID
+                              left join sys_repair repair on  PART_TASK_TYPE = 2 and PART_TASK_ID = REPAIR_ID
+        where 1=1
+        <if test="partLog.partName != null and partLog.partName != '' ">and part.PART_NAME  like CONCAT('%',#{partLog.partName} ,'%')  </if>
+        <if test="partLog.deviceName != null and partLog.deviceName != '' ">and device.DEVICE_NAME  like CONCAT('%',#{partLog.deviceName} ,'%')  </if>
+        <if test="partLog.memberName != null and partLog.memberName != '' ">and member.MEMBER_NAME =like CONCAT('%',#{partLog.memberName} ,'%') </if>
+        <if test="partLog.partTaskType != null and partLog.partTaskType != '' ">and spl.PART_TASK_TYPE  = #{partLog.partTaskType}  </if>
+        <if test="partLog.partTaskId != null and partLog.partTaskId != '' ">and spl.PART_TASK_ID = #{partLog.partTaskId} </if>
+        <if test="partLog.partLogId != null and partLog.partLogId != '' "> and spl.PART_LOG_ID = #{partLog.partLogId}</if>
+        <if test="startTime!=null and startTime.trim() neq ''">
+            and date_format(PART_USE_TIME,'%Y-%m-%d') &gt;= str_to_date(#{startTime},'%Y-%m-%d')
+        </if>
+        <if test="endTime!=null and endTime.trim() neq ''">
+            and date_format(PART_USE_TIME,'%Y-%m-%d') &lt;= str_to_date(#{endTime},'%Y-%m-%d')
+        </if>
+    </select>
+
+    <resultMap id="PartLogDetail" type="com.management.domain.PartLogDetail">
+        <id property="partLogId" column="PART_LOG_ID" />
+        <result property="partName" column="PART_NAME"/>
+        <result property="deviceName" column="DEVICE_NAME"/>
+        <result property="partQuantity" column="PART_QUANTITY"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="partTaskType" column="PART_TASK_TYPE"/>
+        <result property="useTime" column="PART_USE_TIME"/>
+        <result property="partTaskId" column="PART_TASK_ID"/>
+    </resultMap>
+</mapper>

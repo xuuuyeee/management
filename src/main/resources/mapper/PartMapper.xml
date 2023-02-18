@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.PartMapper">
+    <select id="selectParts" resultType="com.management.domain.Part">
+        select *
+        from sys_part where 1=1
+        <if test="part.partId != null and part.partId != '' ">and PART_ID  = #{part.partId}  </if>
+        <if test="part.partName != null and part.partName  != '' ">and PART_NAME like CONCAT('%',#{part.partName} ,'%') </if>
+        <if test="part.partQuantity != null and part.partQuantity != '' ">and PART_QUANTITY = #{part.partQuantity} </if>
+    </select>
+</mapper>

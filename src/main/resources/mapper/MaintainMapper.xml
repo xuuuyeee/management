@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.MaintainMapper">
+    <select id="selectMaintainLogs" resultType="com.management.domain.Maintain">
+        select MAINTAIN_ID, MAINTAIN_MEMBER_ID, MAINTAIN_DEVICE_ID, MAINTAIN_ADDRESS_ID, MAINTAIN_TIME
+        from sys_maintain where 1=1
+        <if test="Maintain.maintainMemberId != null and Maintain.maintainMemberId != ''">and MAINTAIN_MEMBER_ID  = #{Maintain.maintainMemberId}  </if>
+        <if test="Maintain.maintainDeviceId != null and Maintain.maintainDeviceId != ''">and MAINTAIN_DEVICE_ID  = #{Maintain.maintainDeviceId}  </if>
+        <if test="Maintain.maintainAddressId != null and Maintain.maintainAddressId != ''">and MAINTAIN_ADDRESS_ID = #{Maintain.maintainAddressId} </if>
+        <if test="startTime!=null and startTime.trim() neq ''">
+            and date_format(MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endTime!=null and endTime.trim() neq ''">
+            and date_format(MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+    </select>
+
+    <select id="selectMaintainDetails" resultMap="Detail">
+        select  MAINTAIN_ID,MEMBER_NAME,DEVICE_NAME,ADDRESS_BUILDING,ADDRESS_FLOOR,ADDRESS_ROOM,MAINTAIN_TIME
+        from sys_maintain maintain inner join sys_member member on maintain.MAINTAIN_MEMBER_ID = member.MEMBER_ID
+                                   inner join sys_device device on maintain.MAINTAIN_DEVICE_ID = device.DEVICE_ID
+                                   inner join sys_address address on maintain.MAINTAIN_ADDRESS_ID= address.ADDRESS_ID
+
+        where MAINTAIN_ID = ${maintainId}
+    </select>
+
+    <resultMap id="Detail" type="com.management.domain.MaintainDetail">
+        <id property="maintainId" column="MAINTAIN_ID" />
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="deviceName" column="DEVICE_NAME"/>
+        <result property="addressBuilding" column="ADDRESS_BUILDING"/>
+        <result property="addressFloor" column="ADDRESS_FLOOR"/>
+        <result property="addressRoom" column="ADDRESS_ROOM"/>
+        <result property="maintainTime" column="MAINTAIN_TIME"/>
+    </resultMap>
+
+</mapper>

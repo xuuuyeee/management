@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.DeviceMapper">
+    <select id="selectDevices" resultType="com.management.domain.Device">
+        select DEVICE_ID, DEVICE_NAME, DEVICE_MAINTAIN_TIME, DEVICE_MAINTAIN_MEMBER_ID
+        from sys_device where 1=1
+        <if test="Device.deviceId != null and Device.deviceId != '' ">and DEVICE_ID  = #{Device.deviceId}  </if>
+        <if test="Device.deviceName != null and Device.deviceName != ''" >and DEVICE_NAME  = #{Device.deviceName}  </if>
+        <if test="Device.deviceMaintainMemberId != null and Device.deviceMaintainMemberId != ''">and DEVICE_MAINTAIN_MEMBER_ID = #{Device.deviceMaintainMemberId} </if>
+        <if test="endTime != null and endTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')</if>
+        <if test="startTime != null and startTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')</if>
+    </select>
+
+    <update id="updateDeviceStatus">
+        update sys_device
+        set DEVICE_STATUS = 1
+        where TIMESTAMPDIFF(DAY,date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d'),DATE_FORMAT(NOW(), '%Y-%m-%d')) &gt;= 30
+    </update>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.management.dao.RepairMapper">
+    <select id="selectRepairs" resultType="RepairDetail">
+            select REPAIR_ID , user.MEMBER_NAME AS  CommitMemberName, REPAIR_COMMIT_REASON, DEVICE_NAME, worker.MEMBER_NAME AS RepairMemberName,ADDRESS_BUILDING,ADDRESS_FLOOR,ADDRESS_ROOM,REPAIR_COMMIT_TIME,REPAIR_TIME,REPAIR_STATUS
+            from sys_repair left join sys_member user on REPAIR_COMMIT_ID = user.MEMBER_ID
+                            left join sys_member worker on REPAIR_MEMBER_ID = worker.MEMBER_ID
+                            left join sys_address address on REPAIR_ADDRESS_ID = address.ADDRESS_ID
+                            left join sys_device device on REPAIR_DEVICE_ID = device.DEVICE_ID
+            where 1=1
+            <if test="Repair.repairId != null and Repair.repairId != ''">and REPAIR_ID =  #{Repair.repairId}</if>
+            <if test="Repair.commitMemberName != null and Repair.commitMemberName != ''">and user.MEMBER_NAME like CONCAT('%',#{Repair.commitMemberName} ,'%')</if>
+            <if test="Repair.repairMemberName != null and Repair.repairMemberName != ''">and worker.MEMBER_NAME like CONCAT('%',#{Repair.repairMemberName} ,'%')</if>
+            <if test="Repair.addressBuilding != null and Repair.addressBuilding != ''">and ADDRESS_BUILDING = #{Repair.addressBuilding}</if>
+            <if test="Repair.addressFloor != null and Repair.addressFloor != ''">and ADDRESS_FLOOR = #{Repair.addressFloor}</if>
+            <if test="Repair.addressRoom != null and Repair.addressRoom != ''">and ADDRESS_ROOM = #{Repair.addressRoom}</if>
+            <if test="Repair.deviceName != null and Repair.deviceName != ''">and DEVICE_NAME = #{Repair.deviceName}</if>
+            <if test="Repair.repairStatus != null and Repair.repairStatus != ''">and REPAIR_STATUS = #{Repair.repairStatus}</if>
+            <if test="type != null and type != '' ">
+                <choose>
+                    <when test="type == true">
+                        <if test="endTime != null and endTime.trim() neq ''">and date_format(REPAIR_COMMIT_TIME,'%Y-%m-%d %H:%i:%s') &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')</if>
+                        <if test="startTime != null and startTime.trim() neq ''">and date_format(REPAIR_COMMIT_TIME,'%Y-%m-%d %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')</if>
+                    </when>
+                    <otherwise>
+                        <if test="endTime != null and endTime.trim() neq ''">and date_format(REPAIR_TIME,'%Y-%m-%d %H:%i:%s') &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')</if>
+                        <if test="startTime != null and startTime.trim() neq ''">and date_format(REPAIR_TIME,'%Y-%m-%d %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')</if>
+                    </otherwise>
+                </choose>
+            </if>
+    </select>
+
+    <resultMap id="RepairDetail" type="com.management.domain.RepairDetail">
+        <id property="repairId" column="REPAIR_ID" />
+        <result property="commitMemberName" column="CommitMemberName" />
+        <result property="deviceName" column="DEVICE_NAME"/>
+        <result property="repairCommitReason" column="REPAIR_COMMIT_REASON"/>
+        <result property="repairMemberName" column="RepairMemberName"/>
+        <result property="addressBuilding" column="ADDRESS_BUILDING"/>
+        <result property="addressFloor" column="ADDRESS_FLOOR"/>
+        <result property="addressRoom" column="ADDRESS_ROOM"/>
+        <result property="repairCommitTime" column="REPAIR_COMMIT_TIME"/>
+        <result property="repairTime" column="REPAIR_TIME"/>
+        <result property="repairStatus" column="REPAIR_STATUS"/>
+    </resultMap>
+</mapper>

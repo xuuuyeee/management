@@ -1,8 +1,10 @@
 package com.management.service;
 
-import com.management.domain.Device;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.management.domain.Device;
+import com.management.domain.DeviceAndAddress;
 import com.management.domain.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,18 +19,22 @@ import java.util.List;
 public interface DeviceService extends IService<Device> {
     /**
      * 添加设备
+     *
      * @param device
      * @return
      */
-    public Result<Boolean> insertDevice(Device device);
+    public Result<Boolean> insertDevice(Device device, MultipartFile file);
+
     /**
      * 查询设备
      */
-    public Result<List<Device>> selectDevices(Device device,String startTime,String endTime);
+    public Result<List<DeviceAndAddress>> selectDevices(Device device, String startTime, String endTime);
+
     /**
      * 更新设备的时间
      */
     public Boolean updateDevice(Device device);
+
     /**
      * 删除设备
      */
@@ -39,4 +45,9 @@ public interface DeviceService extends IService<Device> {
      * updateDeviceStatus
      */
     public long updateDeviceStatus();
+
+    /**
+     * 获取设备详细信息
+     */
+    public Result<Device> detailDeviceInfo(Integer device);
 }

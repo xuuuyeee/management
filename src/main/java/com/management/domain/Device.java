@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.*;
 
 /**
  * <p>
@@ -54,4 +56,16 @@ public class Device implements Serializable {
      */
     @TableField("DEVICE_STATUS")
     private Integer deviceStatus;
+
+    /**
+     * 设备地址
+     */
+    @TableField("DEVICE_ADDRESS")
+    private Integer deviceAddress;
+
+    /**
+     * 设备图片路径
+     */
+    @TableField("DEVICE_PIC_PATH")
+    private String devicePicPath;
 }

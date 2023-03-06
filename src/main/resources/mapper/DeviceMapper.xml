@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.dao.DeviceMapper">
-    <select id="selectDevices" resultType="com.management.domain.Device">
-        select DEVICE_ID, DEVICE_NAME, DEVICE_MAINTAIN_TIME, DEVICE_MAINTAIN_MEMBER_ID
-        from sys_device where 1=1
-        <if test="Device.deviceId != null and Device.deviceId != '' ">and DEVICE_ID  = #{Device.deviceId}  </if>
-        <if test="Device.deviceName != null and Device.deviceName != ''" >and DEVICE_NAME  = #{Device.deviceName}  </if>
-        <if test="Device.deviceMaintainMemberId != null and Device.deviceMaintainMemberId != ''">and DEVICE_MAINTAIN_MEMBER_ID = #{Device.deviceMaintainMemberId} </if>
-        <if test="endTime != null and endTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')</if>
-        <if test="startTime != null and startTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')</if>
+    <select id="selectDevices" resultType="DeviceAndAddress">
+        select DEVICE_ID, DEVICE_NAME, DEVICE_MAINTAIN_TIME,
+        MEMBER_NAME,DEVICE_PIC_PATH,DEVICE_ADDRESS,ADDRESS_FLOOR,ADDRESS_ROOM,ADDRESS_BUILDING
+        from sys_device left join sys_address on DEVICE_ADDRESS = ADDRESS_ID
+        left join sys_member on DEVICE_MAINTAIN_MEMBER_ID = MEMBER_ID
+        where 1=1
+        <if test="Device.deviceStatus !=null and Device.deviceStatus != '' ">and DEVICE_STATUS =
+            #{Device.deviceStatus}
+        </if>
+        <if test="Device.deviceId != null and Device.deviceId != '' ">and DEVICE_ID = #{Device.deviceId}</if>
+        <if test="Device.deviceName != null and Device.deviceName != ''">and DEVICE_NAME = #{Device.deviceName}</if>
+        <if test="Device.deviceMaintainMemberId != null and Device.deviceMaintainMemberId != ''">and
+            DEVICE_MAINTAIN_MEMBER_ID = #{Device.deviceMaintainMemberId}
+        </if>
+        <if test="endTime != null and endTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d %H:%i:%s')
+            &lt;= str_to_date(#{endTime},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="startTime != null and startTime.trim() neq ''">and date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d
+            %H:%i:%s') &gt;= str_to_date(#{startTime},'%Y-%m-%d %H:%i:%s')
+        </if>
     </select>
 
     <update id="updateDeviceStatus">
         update sys_device
         set DEVICE_STATUS = 1
-        where TIMESTAMPDIFF(DAY,date_format(DEVICE_MAINTAIN_TIME,'%Y-%m-%d'),DATE_FORMAT(NOW(), '%Y-%m-%d')) &gt;= 30
+        where TIMESTAMPDIFF(DAY, date_format(DEVICE_MAINTAIN_TIME, '%Y-%m-%d'), DATE_FORMAT(NOW(), '%Y-%m-%d')) &gt;= 30
     </update>
+
+    <resultMap id="DeviceAndAddress" type="com.management.domain.DeviceAndAddress">
+        <id property="deviceId" column="DEVICE_ID"/>
+        <result property="deviceName" column="DEVICE_NAME"/>
+        <result property="deviceMaintainTime" column="DEVICE_MAINTAIN_TIME"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="devicePicPath" column="DEVICE_PIC_PATH"/>
+        <result property="deviceAddress" column="DEVICE_ADDRESS"/>
+        <result property="addressFloor" column="ADDRESS_FLOOR"/>
+        <result property="addressRoom" column="ADDRESS_ROOM"/>
+        <result property="addressBuilding" column="ADDRESS_BUILDING"/>
+    </resultMap>
 </mapper>

@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RepairDetail {
     private Integer repairId;
+    private Integer repairMemberId;
     private String commitMemberName;
     private String repairCommitReason;
     private String repairMemberName;

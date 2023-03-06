@@ -4,10 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.*;
-import org.apache.ibatis.annotations.ConstructorArgs;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -67,6 +68,11 @@ public class Member implements Serializable {
      */
     @TableField("MEMBER_PASSWORD")
     private String memberPassword;
+    /**
+     * 人员状态
+     */
+    @TableField("MEMBER_STATUS")
+    private Integer memberStatus;
 
     public Member(String name, String userName, String password) {
         this.memberName = name;

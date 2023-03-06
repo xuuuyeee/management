@@ -1,7 +1,7 @@
 package com.management.service;
 
-import com.management.domain.Repair;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.management.domain.Repair;
 import com.management.domain.RepairDetail;
 import com.management.domain.Result;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +19,16 @@ import java.util.List;
 public interface RepairService extends IService<Repair> {
     /**
      * 生成维修任务
+     *
      * @param repair
      * @return
      */
-    public Result<Boolean> insertRepairTask(Repair repair, MultipartFile[] files);
+    public Result<Boolean> insertRepairTask(Repair repair, List<MultipartFile> files);
+
     /**
      * 查询维修任务
      */
-    public Result<List<RepairDetail>> selectRepairs(RepairDetail repair,String startTime,String endTime,Boolean type);
+    public Result<List<RepairDetail>> selectRepairs(RepairDetail repair, String startTime, String endTime, Boolean type);
 
-
+    public Result<Boolean> updateRepair(Repair repair);
 }

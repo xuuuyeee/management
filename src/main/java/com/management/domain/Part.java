@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import lombok.*;
+import java.io.Serializable;
 
 /**
  * <p>
@@ -14,11 +16,11 @@ import lombok.*;
  * </p>
  *
  * @author xuuuyeee
- * @since 2023-01-16
+ * @since 2023-03-04
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @TableName("sys_part")
 public class Part implements Serializable {
 
@@ -42,8 +44,45 @@ public class Part implements Serializable {
     @TableField("PART_QUANTITY")
     private Integer partQuantity;
 
-    public Part(String partName,Integer partQuantity){
-        this.partName = partName;
-        this.partQuantity = partQuantity;
-    }
+    /**
+     * 零件编号
+     */
+    @TableField("PART_NUM")
+    private String partNum;
+
+    /**
+     * 零件型号
+     */
+    @TableField("PART_CODE")
+    private String partCode;
+
+    /**
+     * 零件单价
+     */
+    @TableField("PART_SPRICE")
+    private Integer partSprice;
+
+    /**
+     * 零件单位
+     */
+    @TableField("PART_DANWEI")
+    private String partDanwei;
+
+    /**
+     * 零件库存警告
+     */
+    @TableField("PART_ALERT")
+    private Integer partAlert;
+
+    /**
+     * 零件厂商
+     */
+    @TableField("PART_FACTORY")
+    private String partFactory;
+
+    /**
+     * 零件图片地址
+     */
+    @TableField("PART_PIC_PATH")
+    private String partPicPath;
 }

@@ -1,10 +1,12 @@
 package com.management.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.management.domain.Code;
 import com.management.domain.Part;
 import com.management.domain.Result;
 import com.management.service.PartService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -22,8 +24,12 @@ import java.util.List;
 public class PartController {
     @Resource
     private PartService partService;
+
     @PostMapping("/add")
-    public Result<Boolean> insertPart(@RequestBody Part part){ return partService.insertPart(part); }
+    public Result<Boolean> insertPart(@RequestPart("part") String part, MultipartFile file) {
+        Part partObj = JSONUtil.toBean(part, Part.class, true);
+        return partService.insertPart(partObj, file);
+    }
 
     @PostMapping("/select")
     public Result<List<Part>> selectParts(@RequestBody Part part){ return partService.selectParts(part); }

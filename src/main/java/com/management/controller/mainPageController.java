@@ -25,6 +25,7 @@ public class mainPageController {
     private MainPageService mainPageService;
     @GetMapping("/main")
     public Result<MainPageData> mainPageData(@RequestParam Integer id){
+        System.out.println(id);
         return mainPageService.getMainPageData(id);
     }
 }

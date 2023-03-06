@@ -2,33 +2,103 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.dao.MainPageMapper">
     <select id="getCount" resultType="MainPageData">
-        select sum(t.DeviceMaintainNum) DeviceMaintainNum, sum(t.DeviceRepairNum)  DeviceRepairNum,sum(t.DeviceTotalNum) DeviceTotalNum,sum(t.maintainWillNumber) MaintainWillNumber,sum(t.maintainIngNumber) MaintainIngNumber,
-               sum(t.MemberTotalMember) MemberTotalMember,sum(t.MemberWorkNum) MemberWorkNum,
-               sum(t.TodayRepairOkNum) TodayRepairOkNum,sum(t.TodayRepairTaskNum) TodayRepairTaskNum
-        from(
-        select count(DEVICE_ID) as DeviceTotalNum,count(DEVICE_STATUS = 1 or null) as DeviceMaintainNum,count(DEVICE_STATUS >=3 or null) as DeviceRepairNum , 0 MemberTotalMember, 0 MemberWorkNum,count(DEVICE_STATUS = 1 or null) as MaintainWillNumber,count(DEVICE_STATUS = 2 or null) as MaintainIngNumber,0 TodayRepairTaskNum,0 TodayRepairOkNum
-        from sys_device
-        union all
-        select 0 DeviceTotalNum, 0 DeviceMaintainNum,0 DeviceRepairNum, count(MEMBER_ID) as  MemberTotalMember,count(MEMBER_STATUS = 1) as MemberWorkNum ,0 MaintainWillNumber,0 MaintainIngNumber,0 TodayRepairTaskNum,0 TodayRepairOkNum
-        from sys_member
-        union all
-        select 0 DeviceTotalNum, 0 DeviceMaintainNum,0 DeviceRepairNum, 0 MemberTotalMember, 0 MemberWorkNum,0 MaintainWillNumber,0 MaintainIngNumber,count(REPAIR_STATUS = 2) TodayRepairTaskNum,count(REPAIR_STATUS = 3 and TIMESTAMPDIFF(DAY,date_format(REPAIR_TIME,'%Y-%m-%d'),DATE_FORMAT(NOW(), '%Y-%m-%d')) = 0) TodayRepairOkNum
-        from sys_repair
-        ) t
+        select sum(t.DeviceMaintainNum) DeviceMaintainNum,
+               sum(t.DeviceRepairNum)   DeviceRepairNum,
+               sum(t.DeviceTotalNum)    DeviceTotalNum,
+               sum(t.MemberTotalMember) MemberTotalNumber,
+               sum(t.MemberWorkNum)     MemberWorkNum,
+               sum(t.InfoTotalNumber)   InfoTotalNumber,
+               sum(t.OkMaintainNumber)  OkMaintainNumber,
+               sum(t.UnOkRepairNumber)  UnOkRepairNumber,
+               sum(t.SheetTotalNumber)  SheetTotalNumber
+#                sum(t.maintainWillNumber) MaintainWillNumber,sum(t.maintainIngNumber) MaintainIngNumber,
+#                sum(t.TodayRepairOkNum) TodayRepairOkNum,sum(t.TodayRepairTaskNum) TodayRepairTaskNum
+        from (select count(DEVICE_ID)                  as DeviceTotalNum,
+                     count(DEVICE_STATUS = 1 or null)  as DeviceMaintainNum,
+                     count(DEVICE_STATUS >= 3 or null) as DeviceRepairNum,
+                     0                                    MemberTotalMember,
+                     0                                    MemberWorkNum,
+                     0                                    InfoTotalNumber,
+                     0                                    SheetTotalNumber,
+                     0                                    OkMaintainNumber,
+                     0                                    UnOkRepairNumber
+              from sys_device
+              union all
+              select 0                                   DeviceTotalNum,
+                     0                                   DeviceMaintainNum,
+                     0                                   DeviceRepairNum,
+                     count(MEMBER_ID)                 as MemberTotalMember,
+                     count(MEMBER_STATUS = 1 or null) as MemberWorkNum,
+                     0                                   InfoTotalNumber,
+                     0                                   SheetTotalNumber,
+                     0                                   OkMaintainNumber,
+                     0                                   UnOkRepairNumber
+              from sys_member
+              union all
+              #         select 0 DeviceTotalNum, 0 DeviceMaintainNum,0 DeviceRepairNum, 0 MemberTotalMember, 0 MemberWorkNum,0 MaintainWillNumber,0 MaintainIngNumber,count(REPAIR_STATUS = 2) TodayRepairTaskNum,count(REPAIR_STATUS = 3 and TIMESTAMPDIFF(DAY,date_format(REPAIR_TIME,'%Y-%m-%d'),DATE_FORMAT(NOW(), '%Y-%m-%d')) = 0) TodayRepairOkNum
+#         from sys_repair
+#         union all
+              select 0                     DeviceTotalNum,
+                     0                     DeviceMaintainNum,
+                     0                     DeviceRepairNum,
+                     0                     MemberTotalMember,
+                     0                     MemberWorkNum,
+                     0                     InfoTotalNumber,
+                     0                     SheetTotalNumber,
+                     count(MAINTAIN_ID) as OkMaintainNumber,
+                     0                     UnOkRepairNumber
+#                (count(sys_repair.REPAIR_ID) + count(MAINTAIN_ID)) as SheetTotalNumber,count(if(sys_repair.REPAIR_STATUS  &lt;=2,1,0)) as UnOkRepairNumber
+              from sys_maintain
+              union all
+              select 0              DeviceTotalNum,
+                     0              DeviceMaintainNum,
+                     0              DeviceRepairNum,
+                     0              MemberTotalMember,
+                     0              MemberWorkNum,
+                     count(INFO_ID) InfoTotalNumber,
+                     0              SheetTotalNumber,
+                     0              OkMaintainNumber,
+                     0              UnOkRepairNumber
+              from sys_info
+              union all
+              select 0         DeviceTotalNum,
+                     0         DeviceMaintainNum,
+                     0         DeviceRepairNum,
+                     0         MemberTotalMember,
+                     0         MemberWorkNum,
+                     0         InfoTotalNumber,
+                     sum(a) AS SheetTotalNumber,
+                     0         OkMaintainNumber,
+                     0         UnOkRepairNumber
+              from (select COUNT(*) a from sys_repair union all select COUNT(*) a from sys_maintain) c
+              union all
+              select 0                                                    DeviceTotalNum,
+                     0                                                    DeviceMaintainNum,
+                     0                                                    DeviceRepairNum,
+                     0                                                    MemberTotalMember,
+                     0                                                    MemberWorkNum,
+                     0                                                    InfoTotalNumber,
+                     0                                                    SheetTotalNumber,
+                     0                                                    OkMaintainNumber,
+                     count(if(sys_repair.REPAIR_STATUS &lt;= 2, 1, 0)) as UnOkRepairNumber
+              from sys_repair) t
     </select>
 
     <resultMap id="MainPageData" type="com.management.domain.MainPageData">
         <result property="deviceTotalNum" column="DeviceTotalNum"></result>
         <result property="deviceMaintainNum" column="DeviceMaintainNum"></result>
         <result property="deviceRepairNum" column="DeviceRepairNum"></result>
-        <result property="todayRepairTaskNum" column="TodayRepairTaskNum"></result>
-        <result property="todayRepairOkNum" column="TodayRepairOkNum"></result>
-        <result property="memberWorkNum" column="MemberWorkNum"></result>
+        <!--        <result property="todayRepairTaskNum" column="TodayRepairTaskNum"></result>-->
+        <!--        <result property="todayRepairOkNum" column="TodayRepairOkNum"></result>-->
         <result property="memberTotalMember" column="MemberTotalMember"></result>
-        <result property="maintainWillNumber" column="MaintainWillNumber"></result>
-        <result property="maintainIngNumber" column="MaintainIngNumber"
+        <result property="memberWorkNum" column="MemberWorkNum"></result>
 
+        <result property="infoTotalNumber" column="InfoTotalNumber"></result>
+        <result property="sheetTotalNumber" column="SheetTotalNumber"></result>
+        <result property="okMaintainNumber" column="OkMaintainNumber"></result>
+        <result property="unOkRepairNumber" column="UnOkRepairNumber"></result>
 
-        ></result>
+        <!--        <result property="maintainWillNumber" column="MaintainWillNumber"></result>-->
+        <!--        <result property="maintainIngNumber" column="MaintainIngNumber"></result>-->
     </resultMap>
 </mapper>

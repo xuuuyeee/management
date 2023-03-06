@@ -9,10 +9,15 @@ public class MainPageData {
     private Integer deviceTotalNum;
     private Integer deviceRepairNum;
     private Integer deviceMaintainNum;
+    private Integer memberTotalNumber;
     private Integer memberWorkNum;
-    private Integer memberTotalMember;
-    private Integer todayRepairTaskNum;
-    private Integer todayRepairOkNum;
-    private Integer maintainWillNumber;
-    private Integer maintainIngNumber;
+    //    private Integer todayRepairTaskNum;
+//    private Integer todayRepairOkNum;
+//    private Integer maintainWillNumber;
+//    private Integer maintainIngNumber;
+    private Integer infoTotalNumber;
+    private Integer sheetTotalNumber;
+
+    private Integer okMaintainNumber;
+    private Integer unOkRepairNumber;
 }

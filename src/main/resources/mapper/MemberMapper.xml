@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.management.dao.MemberMapper">
     <select id="selectMembers" resultType="com.management.domain.Member">
-        select MEMBER_ID, MEMBER_LEVEL, MEMBER_NAME, MEMBER_PIC, MEMBER_REPAIR_AREA
+        select MEMBER_ID, MEMBER_LEVEL, MEMBER_NAME, MEMBER_PIC, MEMBER_REPAIR_AREA,MEMBER_STATUS
         from sys_member where 1=1
         <if test="Member.memberId != null and Member.memberId != ''">and MEMBER_ID  = #{Member.memberId} </if>
         <if test="Member.memberLevel != null and Member.memberLevel != ''">and MEMBER_LEVEL  = #{Member.memberLevel} </if>
@@ -11,10 +11,10 @@
         <if test="state != null and state != '' ">
             <choose>
                 <when test="state == false">
-                   and MEMBER_STATUS = 0
+                    and MEMBER_STATUS = 1
                 </when>
                 <otherwise>
-                   and MEMBER_STATUS = 1
+                    and MEMBER_STATUS = 0
                 </otherwise>
             </choose>
         </if>

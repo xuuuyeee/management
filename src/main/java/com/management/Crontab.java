@@ -1,12 +1,12 @@
 package com.management;
-
-import com.management.dao.DeviceMapper;
 import com.management.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
+@EnableScheduling
 public class Crontab {
     @Autowired
     private DeviceService deviceService;

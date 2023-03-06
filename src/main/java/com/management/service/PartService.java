@@ -1,8 +1,9 @@
 package com.management.service;
 
-import com.management.domain.Part;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.management.domain.Part;
 import com.management.domain.Result;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface PartService extends IService<Part> {
      * 零件添加
      * 管理员使用
      */
-    public Result<Boolean> insertPart(Part part);
+    public Result<Boolean> insertPart(Part part, MultipartFile file);
 
     /**
      * 全部零件查询

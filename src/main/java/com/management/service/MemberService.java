@@ -1,7 +1,7 @@
 package com.management.service;
 
-import com.management.domain.Member;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.management.domain.Member;
 import com.management.domain.Result;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,13 +17,14 @@ import java.util.List;
  */
 public interface MemberService extends IService<Member> {
     /**
-     *  测试用方法
+     * 测试用方法
      */
     public void test();
+
     /**
-     *  登录方法
+     * 登录方法
      */
-    public Result<Boolean> login(String userName, String password);
+    public Result<Member> login(String userName, String password);
 
     /**
      *  注册方法

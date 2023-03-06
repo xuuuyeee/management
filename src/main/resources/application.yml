@@ -11,7 +11,7 @@ spring:
     banner-mode: off
   servlet:
     multipart:
-      location: E:/managementPicDir
+      location: E:/managementPicDir/
       max-file-size: 100MB
       max-request-size: 100MB
 
@@ -29,3 +29,5 @@ mybatis-plus:
       # 主键生成策略（AUTO务必在数据库表中设置自增字段）
       id-type: AUTO
     banner: off
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
